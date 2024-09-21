@@ -61,13 +61,31 @@ namespace MauiTarea
             10              //scamaca
         };
 
+        // Lista de valores para cada carta
+        private readonly List<decimal> _cartasValores = new List<decimal>
+        {
+            100, 40, 40, 70, 50, 10, 10, 10, 5, 5, 5, 5, 5
+        };
+
+        // Saldo inicial y costo del sobre
+        private decimal _saldo = 50;
+        private readonly decimal _costeSobre = 10;
 
         private ImageButton _randomImageButton;
         private Image _displayedImage;
+        private Label _balanceLabel;
 
         public MainPage()
         {
             InitializeComponent();
+
+            // Crear y configurar el saldo del jugador
+            _balanceLabel = new Label
+            {
+                Text = $"Saldo: {_saldo} monedas",
+                FontSize = 18,
+                HorizontalOptions = LayoutOptions.Center
+            };
 
             // Crear y configurar ImageButton
             _randomImageButton = new ImageButton
@@ -94,11 +112,17 @@ namespace MauiTarea
             var stackLayout = new VerticalStackLayout
             {
                 Padding = 10,
-                Children = { _randomImageButton, _displayedImage }
+                Children = { _balanceLabel, _randomImageButton, _displayedImage }
             };
 
             // Asignar el layout a la ContentPage
             Content = stackLayout;
+        }
+
+        // Actualizar la visualización del saldo
+        private void UpdateBalanceDisplay()
+        {
+            _balanceLabel.Text = $"Saldo: {_saldo} monedas";
         }
 
         private string ObtenerCarta()
@@ -129,12 +153,25 @@ namespace MauiTarea
 
         private void OnShowRandomImageButtonClicked(object sender, EventArgs e)
         {
-            // Obtener la imagen seleccionada basada en probabilidades
-            string selectedImage = ObtenerCarta();
+            if (_saldo < _costeSobre)
+            {
+                DisplayAlert("Sin saldo", "No tienes suficiente saldo para abrir un sobre.", "OK");
+                return;
+            }
 
-            // Mostrar la imagen seleccionada en el control Image
+            _saldo -= _costeSobre;
+
+            string selectedImage = ObtenerCarta();
+            int selectedIndex = _imagenesLocales.IndexOf(selectedImage);
+            decimal cardValue = _cartasValores[selectedIndex];
+
+            _saldo += cardValue;
+
             _displayedImage.Source = ImageSource.FromFile(selectedImage);
             _displayedImage.IsVisible = true;
+
+            UpdateBalanceDisplay();
+            DisplayAlert("Nueva Carta", $"¡Ganaste {cardValue} monedas! Saldo actual: {_saldo} monedas.", "OK");
         }
 
     }
