@@ -8,24 +8,59 @@ namespace MauiTarea
 {
     public partial class MainPage : ContentPage
     {
-       
-        // Lista de URLs de imágenes
-        private readonly List<string> _imageUrls = new List<string>
-        {
-            "https://th.bing.com/th/id/OIP.nBTz4kBijuW9us8tdxKScwHaKW?rs=1&pid=ImgDetMain",
-                "https://preview.redd.it/ronaldo-icon-card-v0-uwxj4tncv32b1.png?width=640&crop=smart&auto=webp&s=4a4e1000d60afe07cf586e1228b2e8c15e427f20",
-                "https://cardsplus.it/wp-content/uploads/2020/09/MBAPPE-1099x1536.png",
-                "https://media.tycsports.com/files/2021/08/19/321578/la-mejor-carta-de-messi-en-la-historia-de-fifa_w862.png",
-                "https://cardsplus.it/wp-content/uploads/2021/01/Bruno-Fernandes-97-TOTY-1099x1536.png",
-                "https://www.fifaultimateteam.it/en/wp-content/uploads/2021/06/Paredes.jpg",
-                "https://1.bp.blogspot.com/-QNKGMyXWaTY/WIJd60TyNKI/AAAAAAAAAGY/7v2UO-kddCIpnpMuBnnlew-o-zAxul3kACLcB/s320/BRONCE%2B%25C3%259ANICO%2BDORSCH.png",
-                "https://th.bing.com/th/id/OIP.nxP-IxMp_i-x89Dn52rQSgHaLH?rs=1&pid=ImgDetMain",
-                "https://media.contentapi.ea.com/content/dam/ea/easfc/fc-24/ratings/common/full/player-shields/en/237993.png.adapt.265w.png",
-                "https://media.contentapi.ea.com/content/dam/ea/easfc/fc-24/ratings/common/full/player-shields/fr/274081.png.adapt.250w.png",
-                "https://media.contentapi.ea.com/content/dam/ea/easfc/fc-24/ratings/common/full/player-shields/en/240964.png.adapt.250w.png",
-                "https://cardsplus.it/wp-content/uploads/2023/04/FIFA-23-Zidane-Trophy-Titans-Icon.png"
 
+        //// Lista de URLs de imágenes
+        //private readonly List<string> _imageUrls = new List<string>
+        //{
+        //    "https://th.bing.com/th/id/OIP.nBTz4kBijuW9us8tdxKScwHaKW?rs=1&pid=ImgDetMain",
+        //        "https://preview.redd.it/ronaldo-icon-card-v0-uwxj4tncv32b1.png?width=640&crop=smart&auto=webp&s=4a4e1000d60afe07cf586e1228b2e8c15e427f20",
+        //        "https://cardsplus.it/wp-content/uploads/2020/09/MBAPPE-1099x1536.png",
+        //        "https://media.tycsports.com/files/2021/08/19/321578/la-mejor-carta-de-messi-en-la-historia-de-fifa_w862.png",
+        //        "https://cardsplus.it/wp-content/uploads/2021/01/Bruno-Fernandes-97-TOTY-1099x1536.png",
+        //        "https://www.fifaultimateteam.it/en/wp-content/uploads/2021/06/Paredes.jpg",
+        //        "https://1.bp.blogspot.com/-QNKGMyXWaTY/WIJd60TyNKI/AAAAAAAAAGY/7v2UO-kddCIpnpMuBnnlew-o-zAxul3kACLcB/s320/BRONCE%2B%25C3%259ANICO%2BDORSCH.png",
+        //        "https://th.bing.com/th/id/OIP.nxP-IxMp_i-x89Dn52rQSgHaLH?rs=1&pid=ImgDetMain",
+        //        "https://media.contentapi.ea.com/content/dam/ea/easfc/fc-24/ratings/common/full/player-shields/en/237993.png.adapt.265w.png",
+        //        "https://media.contentapi.ea.com/content/dam/ea/easfc/fc-24/ratings/common/full/player-shields/fr/274081.png.adapt.250w.png",
+        //        "https://media.contentapi.ea.com/content/dam/ea/easfc/fc-24/ratings/common/full/player-shields/en/240964.png.adapt.250w.png",
+        //        "https://cardsplus.it/wp-content/uploads/2023/04/FIFA-23-Zidane-Trophy-Titans-Icon.png"
+
+        //};
+        private readonly List<string> _imagenesLocales = new List<string>
+        {
+            "messi.jpg",
+            "lewandoski.jpg",
+            "dimaria.png",
+            "cronaldo.png",
+            "neymar.jpg",
+            "senesi.png",
+            "rossi.png",
+            "lemos.png",
+            "araujo.jpg",
+            "arena.png",
+            "compagnucci.png",
+            "dimarco.png",
+            "scamaca.png"
         };
+
+
+        private readonly List<int> _imagenesProbabilidades = new List<int>
+        {
+             5,             //messi
+             5,             //lewandoski
+             5,             //dimaria
+             5,             //cristiano ronaldo
+             5,             //neymar
+            15,             //sensi
+            15,             //rossi
+            15,             //lemos
+            10,             //araujo
+            10,             //arena
+            10,             //compagnucci
+            10,             //dimarco
+            10              //scamaca
+        };
+
 
         private ImageButton _randomImageButton;
         private Image _displayedImage;
@@ -66,17 +101,39 @@ namespace MauiTarea
             Content = stackLayout;
         }
 
+        private string ObtenerCarta()
+        {
+            // Sumar todas las probabilidades
+            int probabilidadTotal = _imagenesProbabilidades.Sum();
+
+            // Seleccionar un número aleatorio entre 0 y la suma de las probabilidades
+            var random = new Random();
+            int randomNumber = random.Next(0, probabilidadTotal);
+
+            // Seleccionar la imagen basada en el número aleatorio
+            int calculoProbabilidad = 0;
+
+            for (int i = 0; i < _imagenesLocales.Count; i++)
+            {
+                calculoProbabilidad += _imagenesProbabilidades[i];
+                if (randomNumber < calculoProbabilidad)
+                {
+                    return _imagenesLocales[i]; // Retornar la imagen seleccionada
+                }
+            }
+
+            // En caso de que falle (no debería), retornar la primera imagen por defecto
+            return _imagenesLocales[0];
+        }
+
+
         private void OnShowRandomImageButtonClicked(object sender, EventArgs e)
         {
-            // Seleccionar una imagen aleatoria
-            var random = new Random();
-            int index = random.Next(_imageUrls.Count);
+            // Obtener la imagen seleccionada basada en probabilidades
+            string selectedImage = ObtenerCarta();
 
-            //// Mostrar la imagen seleccionada en el ImageButton
-            //_randomImageButton.Source = _imageUrls[index];
-
-            // También puedes mostrar la imagen en el control Image, si lo deseas
-            _displayedImage.Source = _imageUrls[index];
+            // Mostrar la imagen seleccionada en el control Image
+            _displayedImage.Source = ImageSource.FromFile(selectedImage);
             _displayedImage.IsVisible = true;
         }
 
